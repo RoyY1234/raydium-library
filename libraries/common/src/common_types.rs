@@ -1,4 +1,4 @@
-use anchor_client::Cluster;
+// use anchor_client::Cluster;
 use anyhow::Result;
 use clap::Parser;
 use solana_sdk::pubkey::Pubkey;
@@ -232,11 +232,11 @@ impl CommonConfig {
         self.simulate = command.simulate;
     }
 
-    pub fn cluster(&self) -> Cluster {
-        let http_url = self.clone().http_url.unwrap_or("".to_string());
-        let ws_url = self.clone().ws_url.unwrap_or("".to_string());
-        Cluster::Custom(http_url, ws_url)
-    }
+    // pub fn cluster(&self) -> Cluster {
+    //     let http_url = self.clone().http_url.unwrap_or("".to_string());
+    //     let ws_url = self.clone().ws_url.unwrap_or("".to_string());
+    //     Cluster::Custom(http_url, ws_url)
+    // }
 
     pub fn set_cluster(&mut self, http_url: &str, ws_url: &str) {
         self.http_url = Some(http_url.to_string());

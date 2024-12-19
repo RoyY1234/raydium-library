@@ -1,4 +1,4 @@
-use anchor_lang::AccountDeserialize;
+// use anchor_lang::AccountDeserialize;
 use anyhow::Result;
 use base64::{prelude::BASE64_STANDARD, Engine};
 use solana_account_decoder::UiAccountEncoding;
@@ -85,21 +85,21 @@ pub fn get_account(client: &RpcClient, addr: &Pubkey) -> Result<Option<Vec<u8>>>
     }
 }
 
-pub fn get_anchor_account<T: AccountDeserialize>(
-    client: &RpcClient,
-    addr: &Pubkey,
-) -> Result<Option<T>> {
-    if let Some(account) = client
-        .get_account_with_commitment(addr, CommitmentConfig::processed())?
-        .value
-    {
-        let mut data: &[u8] = &account.data;
-        let ret = T::try_deserialize(&mut data).unwrap();
-        Ok(Some(ret))
-    } else {
-        Ok(None)
-    }
-}
+// pub fn get_anchor_account<T: AccountDeserialize>(
+//     client: &RpcClient,
+//     addr: &Pubkey,
+// ) -> Result<Option<T>> {
+//     if let Some(account) = client
+//         .get_account_with_commitment(addr, CommitmentConfig::processed())?
+//         .value
+//     {
+//         let mut data: &[u8] = &account.data;
+//         let ret = T::try_deserialize(&mut data).unwrap();
+//         Ok(Some(ret))
+//     } else {
+//         Ok(None)
+//     }
+// }
 
 pub fn get_multiple_accounts(
     client: &RpcClient,
@@ -123,6 +123,7 @@ pub fn get_program_accounts_with_filters(
                     ..RpcAccountInfoConfig::default()
                 },
                 with_context: Some(false),
+                sort_results: Some(false),
             },
         )
         .unwrap();

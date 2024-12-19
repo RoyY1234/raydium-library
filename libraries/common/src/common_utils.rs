@@ -1,12 +1,14 @@
 use crate::common_types::{ExtensionStruct, TokenInfo, TransferFeeInfo, TEN_THOUSAND};
-use anchor_lang::AccountDeserialize;
+// use anchor_lang::AccountDeserialize;
 use anyhow::{format_err, Result};
 use solana_account_decoder::{
     parse_token::{TokenAccountType, UiAccountState},
     UiAccountData,
 };
 use solana_client::{rpc_client::RpcClient, rpc_request::TokenAccountsFilter};
-use solana_sdk::{account::Account as CliAccount, pubkey::Pubkey, signer::keypair::Keypair};
+use solana_sdk::{
+    account::Account as CliAccount, program_pack::Pack, pubkey::Pubkey, signer::keypair::Keypair,
+};
 use spl_token_2022::{
     extension::{
         confidential_transfer::{ConfidentialTransferAccount, ConfidentialTransferMint},
@@ -60,10 +62,10 @@ pub fn unpack_mint(token_data: &[u8]) -> Result<StateWithExtensions<Mint>> {
     Ok(mint)
 }
 
-pub fn deserialize_anchor_account<T: AccountDeserialize>(account: &CliAccount) -> Result<T> {
-    let mut data: &[u8] = &account.data;
-    T::try_deserialize(&mut data).map_err(Into::into)
-}
+// pub fn deserialize_anchor_account<T: AccountDeserialize>(account: &CliAccount) -> Result<T> {
+//     let mut data: &[u8] = &account.data;
+//     T::try_deserialize(&mut data).map_err(Into::into)
+// }
 
 pub fn deserialize_account<T: Copy>(account: &CliAccount, is_anchor_account: bool) -> Result<T> {
     let mut account_data = account.data.as_slice();
@@ -130,7 +132,7 @@ pub fn get_pool_mints_transfer_fee(
 }
 
 /// Calculate the fee for output amount
-pub fn get_transfer_inverse_fee<'data, S: BaseState>(
+pub fn get_transfer_inverse_fee<'data, S: BaseState + Pack>(
     account_state: &StateWithExtensions<'data, S>,
     epoch: u64,
     post_fee_amount: u64,
@@ -151,7 +153,7 @@ pub fn get_transfer_inverse_fee<'data, S: BaseState>(
 }
 
 /// Calculate the fee for input amount
-pub fn get_transfer_fee<'data, S: BaseState>(
+pub fn get_transfer_fee<'data, S: BaseState + Pack>(
     account_state: &StateWithExtensions<'data, S>,
     epoch: u64,
     pre_fee_amount: u64,
@@ -218,7 +220,7 @@ pub fn get_nft_accounts_by_owner_with_specified_program(
     nft_accounts_info
 }
 
-pub fn get_account_extensions<'data, S: BaseState>(
+pub fn get_account_extensions<'data, S: BaseState + Pack>(
     account_state: &StateWithExtensions<'data, S>,
 ) -> Vec<ExtensionStruct> {
     let mut extensions: Vec<ExtensionStruct> = Vec::new();
